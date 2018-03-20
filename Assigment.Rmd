@@ -1,0 +1,111 @@
+---
+title: "Coursera - Regression Models Assignment"
+author: "Arkadiusz Oliwa"
+date: "20 march 2018"
+output: 
+      html_document: 
+            keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(formattable)
+
+```
+
+## Executive summary
+
+In this assignment I compared manual transmission and automatic transmission for MPG (Miles/US galon). There was used simple exploratory analysis as well as hypothesis testing and linear regression. As you can see in this paper having a manual car cause increase in MPG in comparison automatic transmission.
+
+## Dataset
+
+The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles
+
+```{r, warning=FALSE, message=FALSE}
+mtcars %>%
+  formattable(align="l") %>%
+  as.datatable()
+```
+
+
+```{r, echo=FALSE}
+mtcars$am <- as.factor(mtcars$am)
+```
+
+
+## Simple exploratory data analysis
+
+Table  and box plot show car transmission types by  MPG. As you can see there is increase in MGP for manual transmission in comparison to automatic transmission
+
+```{r, warning=FALSE, message=FALSE}
+mtcars %>%
+  mutate(Transmission = ifelse(am == 0, no = "manual", yes = "automatic")) %>%
+  group_by(Transmission) %>%
+  summarise(median = median(mpg), mean = mean(mpg), sd = sd(mpg), min = min(mpg), max = max(mpg)) %>%
+  formattable(align="l")
+```
+
+```{r}
+mtcars %>%
+  mutate(am = ifelse(am == 0, no = "manual", yes = "automatic")) %>%
+  ggplot(aes(y = mpg, x = am, fill = am)) +
+  geom_boxplot(alpha = .7, varwidth = TRUE) 
+```
+
+We can also see  that there is linear correlation between mpg and the variables disp, hp, wt (strong negative) and drat (strong positive)  
+
+```{r}
+corrplot(corr = cor(mtcars[, c("mpg", "disp", "hp", "drat", "wt", "qsec")], 
+                    method = "pearson"), 
+         method = "number", type = "lower")
+```
+
+
+## Hypothesis testing
+
+I’m interested in if the average value of MPG  differs significantly from a manual and  automatic transmission within a defined confidence level 0.05
+
+```{r}
+t.test(formula = mpg ~ am, data = mtcars)
+```
+
+The p-value is 0.001374 so we reject the null hypothesis and we inference that there is a significant statistical difference in the mean MPG between manual transmission cars and that of automatic transmission cars
+
+## Linear regression
+
+I’m going to use function step() to automatically choose the best model by AIC criterion in a stepwise algorithm
+
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE, results='hide'}
+fit <- step(object = lm(formula = mpg ~ ., data = mtcars), direction = "both")
+```
+
+
+
+Based on diagnostic plots we can say that residual are normally distributed and homoskedastic. 
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit)
+```
+
+
+```{r}
+summary(fit)
+```
+
+Looking at result we can say that:
+The adjusted R-squared for the model is 0.8336, and the three variables coefficients are all significant at the 5% confidence level. 
+Based on coefficients we can say that having a manual car we gain 2.9358 MPG above that of an automatic 
+
+
+
+
+
+
