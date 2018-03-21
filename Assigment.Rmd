@@ -21,7 +21,7 @@ library(formattable)
 
 ## Executive summary
 
-In this assignment I compared manual transmission and automatic transmission for MPG (Miles/US galon). There was used simple exploratory analysis as well as hypothesis testing and linear regression. As you can see in this paper having a manual car cause increase in MPG in comparison automatic transmission.
+In this assignment I compared manual transmission and automatic transmission for MPG (Miles/US galon). There was used simple exploratory analysis as well as hypothesis testing and linear regression. As you can see in this paper having a manual car cause increase in MPG in comparison to automatic transmission.
 
 ## Dataset
 
@@ -69,7 +69,7 @@ corrplot(corr = cor(mtcars[, c("mpg", "disp", "hp", "drat", "wt", "qsec")],
 
 ## Hypothesis testing
 
-I’m interested in if the average value of MPG  differs significantly from a manual and  automatic transmission within a defined confidence level 0.05
+Iâ€™m interested in if the average value of MPG  differs significantly from a manual and  automatic transmission within a defined confidence level 0.05
 
 ```{r}
 t.test(formula = mpg ~ am, data = mtcars)
@@ -79,7 +79,7 @@ The p-value is 0.001374 so we reject the null hypothesis and we inference that t
 
 ## Linear regression
 
-I’m going to use function step() to automatically choose the best model by AIC criterion in a stepwise algorithm
+Iâ€™m going to use function step() to automatically choose the best model by AIC criterion in a stepwise algorithm
 
 
 ```{r, echo=TRUE, warning=FALSE, message=FALSE, results='hide'}
